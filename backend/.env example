@@ -1,0 +1,7 @@
+// variables d'environnement => à appeler avec process.env
+
+PORT = 0000
+DB_ID = "XXXXXXX"
+DB_PASSWORD = "XXXXXXXXXXXX"
+DB_CLUSTER = "XXXXXXXXXXXXXX"
+DB_NAME = "XXXXXXXXXXXXXXX"

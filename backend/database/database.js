@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@oc-projet-piiquante.9x5hf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+    `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log('Connexion à MongoDB réussie !'))
