@@ -1,10 +1,14 @@
-//mongodb+srv://Hot_Takes:<password>@oc-projet-piiquante.9x5hf.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+//===========================================================================================
+//                      importation Package
 
 //importer le package pour utiliser les variables d'environnement
 require('dotenv').config();
 
 //importer mongoose pour se connecter à la base de données MongoDB
 const mongoose = require('mongoose');
+
+//===========================================================================================
+//                    connexion à la base de données MongoDB
 
 mongoose
   .connect(
