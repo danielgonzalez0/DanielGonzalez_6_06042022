@@ -24,13 +24,14 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, 'images');
   }, // end destination
+
   //nom du fichier téléchargé
-  filemane: (req, file, callback) => {
+  filename: (req, file, callback) => {
     // suppression des espaces dans nom d'origine
     const name = file.originalname.split(' ').join('_');
     //ajout extension + time stamp pour rendre nom unique
     const extension = MIME_TYPES[file.mimetype];
-    callback(nulle, name + '_' + Date.now() + '.' + extension);
+    callback(null, name + '_' + Date.now() + '.' + extension);
   }, //end filename
 }); // end diskStorage
 

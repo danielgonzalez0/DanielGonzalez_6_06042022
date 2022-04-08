@@ -12,6 +12,11 @@ const mongoose = require('./database/database');
 //importation des routeurs
 
 const userRoutes = require('./routes/user');
+const sauceRoutes = require('./routes/sauce');
+
+//====================================================================
+//Importation du module "path" pour gérer chemin des fichiers
+const path = require('path');
 
 //====================================================================
 //               création de l'application express
@@ -49,6 +54,11 @@ app.use((req, res, next) => {
 //configuration des routes
 
 app.use('/api/auth', userRoutes);
+app.use('/api/sauces', sauceRoutes);
+
+//====================================================================
+//configuration route d'accès aux images du dossier images
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //====================================================================
 
