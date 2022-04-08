@@ -3,14 +3,21 @@
 
 //importation du framwork express
 const express = require('express');
-//création de l'application express
-const app = express();
 //importation de morgan (loggor HTTP)
 const morgan = require('morgan');
 //importation connexion base de données MongoDB
 const mongoose = require('./database/database');
 
 //====================================================================
+//importation des routeurs
+
+const userRoutes = require('./routes/user');
+
+//====================================================================
+//               création de l'application express
+const app = express();
+
+//===================================================================
 //           déclaration middlewares généraux
 
 //loguer les requests et les responses
@@ -34,6 +41,11 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+//====================================================================
+//configuration des routes
+
+app.use('/api/auth', userRoutes);
 
 //====================================================================
 
