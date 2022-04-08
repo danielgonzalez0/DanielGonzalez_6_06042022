@@ -23,6 +23,9 @@ const app = express();
 //loguer les requests et les responses
 app.use(morgan('dev'));
 
+//mise en place debuger mongoose
+mongoose.set('debug', true);
+
 //Accéder au body des requêtes dans les middlewares (req.body)
 app.use(express.json());
 
