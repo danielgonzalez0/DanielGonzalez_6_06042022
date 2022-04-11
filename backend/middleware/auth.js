@@ -21,15 +21,15 @@ module.exports = (req, res, next) => {
     //récupération du userId du token décodé
     const userId = decodedToken.userId;
     //Ajout userId du token décodé dans requête d’authentification
-    //pour le cas ou pas de body dans la requête (ex route delete)
+    //pour le cas ou pas de userId dans la requête (ex route delete)
     req.auth = { userId };
     //vérifier si userId de la requête correspond au userId autorisé
     if (req.body.userId && req.body.userId !== userId) {
       throw 'User ID non valide!';
     } else {
       next();
-    }
+    } //end try
   } catch {
     res.status(403).json({ error: error | 'unauthorized request' });
-  }
+  } //end catch
 }; //end middleware authentification

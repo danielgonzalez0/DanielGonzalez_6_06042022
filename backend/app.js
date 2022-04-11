@@ -57,7 +57,7 @@ app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
 //====================================================================
-//configuration route d'accès aux images du dossier images
+//configuration route d'accès aux images du dossier images pour les requêtes envoyées à /images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //====================================================================

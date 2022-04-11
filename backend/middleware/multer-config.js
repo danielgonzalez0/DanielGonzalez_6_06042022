@@ -18,7 +18,7 @@ const MIME_TYPES = {
 };
 
 //====================================================================
-//             configuration gestion téléchargement des images
+//      configuration gestion téléchargement des images entrantes
 const storage = multer.diskStorage({
   //répertoire de destination
   destination: (req, file, callback) => {
