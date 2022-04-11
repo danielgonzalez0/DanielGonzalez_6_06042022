@@ -67,6 +67,22 @@ exports.getOneSauce = (req, res, next) => {
 //2 cas de figures => avec ou sans modification d'image
 
 exports.modifySauce = (req, res, next) => {
+  //1ere partie: suppression de l'image dans le dossier images
+  if (req.file) {
+    Sauce.findOne({ _id: req.params.id })
+      .then((sauce) => {
+        //récupération du nom de l'image à supprimer
+        const filemane = sauce.imageUrl.split('/images/')[1];
+        //suppression de de l'image dans le dossier image
+        fs.unlink(`images/${filemane}`, (error) => {
+          if (error) throw error;
+        }); // end fs.unlink
+      }) //end then
+      .catch((error) => res.status(404).json({ error }));
+  } //end if req.file
+
+  //2eme partie: mise à jour des modifications dans la base de données
+
   //test si image a été modifié ou non dans la requête
   const sauceObject = req.file
     ? // si modification de l'image, remise à jour de l'url de l'image générée via multer
@@ -78,6 +94,7 @@ exports.modifySauce = (req, res, next) => {
       }
     : //si pas de modification de l'image
       { ...req.body };
+
   //enregistrement des modifications dans mongoDB via id de la sauce
   Sauce.updateOne(
     { _id: req.params.id },
