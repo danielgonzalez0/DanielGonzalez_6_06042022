@@ -30,7 +30,7 @@ exports.createSauce = (req, res, next) => {
     likes: 0,
     dislikes: 0,
     //initialisation tableaux des users like et dislike vide
-    userLiked: [],
+    //userLiked: [],
     userDisliked: [],
   });
   //sauvegarde de la nouvelle instance dans MongoDB

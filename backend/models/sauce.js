@@ -14,10 +14,11 @@ const ModelsSauce = mongoose.Schema({
   mainPepper: { type: String, required: true },
   imageUrl: { type: String, required: true },
   heat: { type: Number, required: true },
-  likes: { type: Number, required: false },
-  dislikes: { type: Number, required: false },
-  userLiked: { type: ['String <userId>'], required: false },
-  userDisliked: { type: ['String <userId>'], required: false },
+  //système de like et dislike
+  likes: { type: Number, defaut: 0, required: false },
+  dislikes: { type: Number, defaut: 0, required: false },
+  userLiked: { type: [String], required: false },
+  userDisliked: { type: [String], required: false },
 }); //end schema
 
 //=========================================================
