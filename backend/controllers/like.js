@@ -11,74 +11,134 @@ const Like = require('../models/sauce');
 //middleware création d'une nouvelle instance sauce
 
 exports.likeSauce = (req, res, next) => {
-  console.log('je suis dans le controler like');
+  // défintion des variables:
+  const likeNumber = parseInt(req.body.like);
+  const userIdInReq = req.body.userId;
 
-  //affichage du body
-  /*la requête like
-  format objet JSON à envoyer dans le body de la requête
-  { "userId": "xxxxxxxxxxxxxxxxxxxxxxxxx",
-"like" : "1"}
-  */
-  console.log('--------req.body du ctrl like--------');
-  console.log(req.body);
-  console.log(req.body.userId);
-  console.log(typeof req.body.userId);
-  console.log(typeof req.body.like);
-  //récupérer l'Id dans l'url de la requête
-
-  console.log('--------req.params du ctrl like--------');
-  console.log(req.params.id);
-
-  //mise en forme id vers format mongoDB _id
-  console.log('--------ctrl like: id vers _id--------');
-  const likeId = { _id: req.params.id };
-  console.log(likeId);
-
-  //aller chercher la sauce dans mongoDB
+  //récupérer l'Id dans l'url de la requête + aller chercher la sauce dans mongoDB
   Like.findOne({ _id: req.params.id })
-    .then((sauce) => {
-      console.log(
-        '--------ctrl like: contenu du résultat promise sauce--------'
-      );
-      console.log(sauce);
-      console.log(sauce.userLiked.includes(req.body.userId));
-      console.log(parseInt(req.body.like) === 1);
-      // like = 1 (likes = +1)
-      //--> utilisation de la méthode includes()
-      //--> utilisation de l'opérateur $inc (mongoDB)
-      //--> utilisation de l'opérateur $push (mongoDB)
-      //--> utilisation de l'opérateur $pull (mongoDB)
+    .then(
+      (sauce) => {
+        const userIdInUserLiked = sauce.userLiked.includes(userIdInReq);
+        const userIdInUserDisliked = sauce.userDisliked.includes(userIdInReq);
 
-      //mise en place logique du like
-      // si userId inclut dans userLiked = false et si like === 1
-      if (
-        !sauce.userLiked.includes(req.body.userId) &&
-        parseInt(req.body.like) === 1
-      ) {
-        console.log(
-          "---> userId n'est pas dans array userLiked et req front like = 1 "
-        );
+        switch (likeNumber) {
+          //==================================================================================
+          case 1:
+            console.log('je suis dans le cas 1');
+            if (!userIdInUserLiked && !userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                { $inc: { likes: 1 }, $push: { userLiked: userIdInReq } }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like +1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
+            //-------------------------------------------------------------------------------
+            if (!userIdInUserLiked && userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { likes: 1, dislikes: -1 },
+                  $push: { userLiked: userIdInReq },
+                  $pull: { userDisliked: userIdInReq },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like +1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
 
-        // mise à jour BDD
+            //-------------------------------------------------------------------------------
+            if (userIdInUserLiked && !userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { likes: 0 },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like -1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
 
-        Like.updateOne(
-          { _id: req.params.id },
-          { $inc: { likes: 1 }, $push: { userLiked: req.body.userId } }
-        ) //end updateone
-          .then(() => res.status(201).json({ message: 'sauce like +1' }))
-          .catch((error) => res.status(400).json({ error }));
-      } else {
-        console.log('conditions false');
-      } //end if
+            break; // end case 1
+          //==================================================================================
+          case 0:
+            console.log('je suis dans le cas 0');
+            if (userIdInUserLiked && !userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { likes: -1 },
+                  $pull: { userLiked: userIdInReq },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like 0' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
+            //-------------------------------------------------------------------------------
+            if (!userIdInUserLiked && userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { dislikes: -1 },
+                  $pull: { userDisliked: userIdInReq },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like 0' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
 
+            break; // end case 0
+          //==================================================================================
+          case -1:
+            console.log('je suis dans le cas -1');
+            if (!userIdInUserLiked && !userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                { $inc: { dislikes: 1 }, $push: { userDisliked: userIdInReq } }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like -1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
+            //-------------------------------------------------------------------------------
+            if (userIdInUserLiked && !userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { likes: -1, dislikes: 1 },
+                  $pull: { userLiked: userIdInReq },
+                  $push: { userDisliked: userIdInReq },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like -1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
+            //-------------------------------------------------------------------------------
+            if (!userIdInUserLiked && userIdInUserDisliked) {
+              // mise à jour BDD
+              Like.updateOne(
+                { _id: req.params.id },
+                {
+                  $inc: { dislikes: 0 },
+                }
+              ) //end updateone
+                .then(() => res.status(201).json({ message: 'sauce like -1' }))
+                .catch((error) => res.status(400).json({ error }));
+            } // end if
+            break;
 
-    })
+          // end case -1
+          //==================================================================================
+        } //end switch
+      } //end findone
+    ) // end then likeSauce
     .catch((error) => res.status(404).json({ error }));
   //end catch
-
-  // like = 0 (likes = 0, pas de vote)
-
-  // like = -1 (dislikes = +1)
-
-  // like = 0 (dislikes = 0)
 }; //end fonction like
