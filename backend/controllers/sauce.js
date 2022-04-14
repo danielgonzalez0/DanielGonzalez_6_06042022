@@ -67,42 +67,55 @@ exports.getOneSauce = (req, res, next) => {
 //2 cas de figures => avec ou sans modification d'image
 
 exports.modifySauce = (req, res, next) => {
-  //1ere partie: suppression de l'image dans le dossier images
-  if (req.file) {
-    Sauce.findOne({ _id: req.params.id })
-      .then((sauce) => {
-        //récupération du nom de l'image à supprimer
-        const filemane = sauce.imageUrl.split('/images/')[1];
-        //suppression de de l'image dans le dossier image
-        fs.unlink(`images/${filemane}`, (error) => {
-          if (error) throw error;
-        }); // end fs.unlink
-      }) //end then
-      .catch((error) => res.status(404).json({ error }));
-  } //end if req.file
+  Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+    //test si id sauce non trouvé
+    if (!sauce) {
+      return res.status(404).json({ error: 'Sauce non trouvée!' });
+    } //end if objet non trouvé
+    //test si user Id est autorisé à modifier la sauce => grâce user.id ajouté dans auth.js
+    if (sauce.userId !== req.auth.userId) {
+      return res.status(401).json({ error: 'Requête non autorisée!' });
+    } // end if ID différent
 
-  //2eme partie: mise à jour des modifications dans la base de données
+    //si accès autorisé, modification de la sauce
 
-  //test si image a été modifié ou non dans la requête
-  const sauceObject = req.file
-    ? // si modification de l'image, remise à jour de l'url de l'image générée via multer
-      {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${
-          req.file.filename
-        }`,
-      }
-    : //si pas de modification de l'image
-      { ...req.body };
+    //1ere partie: suppression de l'image dans le dossier images
+    if (req.file) {
+      Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+          //récupération du nom de l'image à supprimer
+          const filemane = sauce.imageUrl.split('/images/')[1];
+          //suppression de de l'image dans le dossier image
+          fs.unlink(`images/${filemane}`, (error) => {
+            if (error) throw error;
+          }); // end fs.unlink
+        }) //end then
+        .catch((error) => res.status(404).json({ error }));
+    } //end if req.file
 
-  //enregistrement des modifications dans mongoDB via id de la sauce
-  Sauce.updateOne(
-    { _id: req.params.id },
-    { ...sauceObject, _id: req.params.id }
-  )
-    .then(() => res.status(200).json({ message: 'Sauce modifiée' }))
-    .catch((error) => res.status(400).json({ error }));
-};
+    //2eme partie: mise à jour des modifications dans la base de données
+
+    //test si image a été modifié ou non dans la requête
+    const sauceObject = req.file
+      ? // si modification de l'image, remise à jour de l'url de l'image générée via multer
+        {
+          ...JSON.parse(req.body.sauce),
+          imageUrl: `${req.protocol}://${req.get('host')}/images/${
+            req.file.filename
+          }`,
+        }
+      : //si pas de modification de l'image
+        { ...req.body };
+
+    //enregistrement des modifications dans mongoDB via id de la sauce
+    Sauce.updateOne(
+      { _id: req.params.id },
+      { ...sauceObject, _id: req.params.id }
+    )
+      .then(() => res.status(200).json({ message: 'Sauce modifiée' }))
+      .catch((error) => res.status(400).json({ error }));
+  }); //end then findOne
+};//end controller modify
 
 //==========================================================================
 //middleware suppression d'un sauce
