@@ -9,6 +9,11 @@ const express = require('express');
 const router = express.Router();
 
 //====================================================================
+//Importation des middlewares
+
+const password = require('../middleware/password');
+
+//====================================================================
 //Importation du controller
 
 const userCtrl = require('../controllers/user');
@@ -16,7 +21,7 @@ const userCtrl = require('../controllers/user');
 //====================================================================
 //Création des routes
 
-router.post('/signup', userCtrl.signup);
+router.post('/signup', password, userCtrl.signup);
 router.post('/login', userCtrl.login);
 
 //====================================================================

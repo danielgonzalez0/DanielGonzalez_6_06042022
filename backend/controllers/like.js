@@ -8,7 +8,7 @@
 const Like = require('../models/sauce');
 
 //==========================================================================
-//middleware création d'une nouvelle instance sauce
+//middleware système de like
 
 exports.likeSauce = (req, res, next) => {
   // défintion des variables:
