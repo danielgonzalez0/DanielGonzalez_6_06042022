@@ -8,7 +8,7 @@
 const User = require('../models/user');
 //importation bcrypt
 const bcrypt = require('bcrypt');
-//importer le package pour utiliser les variables d'environnement
+//importion du package dotenv pour utiliser les variables d'environnement
 require('dotenv').config();
 //importation jsonwebtoken pour créer/encoder des token d'authentification
 const jwt = require('jsonwebtoken');

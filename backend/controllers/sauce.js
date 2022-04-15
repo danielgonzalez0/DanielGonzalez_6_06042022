@@ -1,5 +1,5 @@
 //==========================================================================
-// définition des logiques métier des middleware sauce
+// définition des logiques métier des middlewares sauce
 
 //==========================================================================
 // importation modules et packages
@@ -30,7 +30,7 @@ exports.createSauce = (req, res, next) => {
     likes: 0,
     dislikes: 0,
     //initialisation tableaux des users like et dislike vide
-    //userLiked: [],
+    userLiked: [],
     userDisliked: [],
   });
   //sauvegarde de la nouvelle instance dans MongoDB
@@ -115,7 +115,7 @@ exports.modifySauce = (req, res, next) => {
       .then(() => res.status(200).json({ message: 'Sauce modifiée' }))
       .catch((error) => res.status(400).json({ error }));
   }); //end then findOne
-};//end controller modify
+}; //end controller modify
 
 //==========================================================================
 //middleware suppression d'un sauce

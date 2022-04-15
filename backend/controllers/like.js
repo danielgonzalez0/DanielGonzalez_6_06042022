@@ -59,7 +59,7 @@ exports.likeSauce = (req, res, next) => {
                   $inc: { likes: 0 },
                 }
               ) //end updateone
-                .then(() => res.status(201).json({ message: 'sauce like -1' }))
+                .then(() => res.status(201).json({ message: 'sauce like +1' }))
                 .catch((error) => res.status(400).json({ error }));
             } // end if
 

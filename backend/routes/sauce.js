@@ -15,7 +15,7 @@ const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
 
 //====================================================================
-//Importation du controller
+//Importation des controllers
 
 const sauceCtrl = require('../controllers/sauce');
 const likeCtrl = require('../controllers/like');

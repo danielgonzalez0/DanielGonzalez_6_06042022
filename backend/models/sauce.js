@@ -1,5 +1,5 @@
 //========================================================
-//         importaion moongoose
+//         importation moongoose
 
 const mongoose = require('mongoose');
 

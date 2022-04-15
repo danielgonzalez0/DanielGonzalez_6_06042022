@@ -3,7 +3,7 @@
 
 //importation du framwork express
 const express = require('express');
-//importation de morgan (loggor HTTP)
+//importation de morgan (logger HTTP)
 const morgan = require('morgan');
 //importation connexion base de données MongoDB
 const mongoose = require('./database/database');
@@ -57,7 +57,7 @@ app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
 //====================================================================
-//configuration route d'accès aux images du dossier images pour les requêtes envoyées à /images
+//configuration route d'accès au dossier /images pour les requêtes avec fichier
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //====================================================================

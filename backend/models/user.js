@@ -1,5 +1,5 @@
 //========================================================
-//         importaion moongoose et unique-validator
+//         importation moongoose et unique-validator
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
